@@ -9536,14 +9536,73 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
-console.log('hi!');
+class String extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
+  constructor(props) {
+    super(props);
+
+    this.onClick = this.onClick.bind(this);
+  }
+
+  onClick() {
+    console.log('clicked!');
+
+    let { context, freq } = this.props;
+
+    let oscillator = context.createOscillator();
+    let gainNode = context.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(context.destination);
+
+    oscillator.type = 'sine';
+    oscillator.frequency.value = freq;
+    gainNode.gain.setValueAtTime(1, context.currentTime);
+
+    oscillator.start(context.currentTime);
+
+    gainNode.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 1);
+    oscillator.stop(context.currentTime + 1);
+  }
+
+  render() {
+    let { freq, name } = this.props;
+
+    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+      'div',
+      { onClick: () => this.onClick() },
+      'a string for frequency: ',
+      freq,
+      ', note: ',
+      name
+    );
+  }
+};
 
 class App extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      context: new (window.AudioContext || window.webkitAudioContext)()
+    };
+
+    // set up audio context
+
+    // strings = [frequencies]
+  }
+
   render() {
+    const { context } = this.state;
+
     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
       'div',
       null,
-      'hi'
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(String, { name: 'E', context: context, freq: 1318.51 }),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(String, { name: 'B', context: context, freq: 987.77 }),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(String, { name: 'G', context: context, freq: 783.99 }),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(String, { name: 'D', context: context, freq: 587.33 }),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(String, { name: 'A', context: context, freq: 440 }),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(String, { name: 'E', context: context, freq: 329.63 })
     );
   }
 };
