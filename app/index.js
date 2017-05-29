@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import './app.scss';
+
 class String extends React.Component {
   constructor(props) {
     super(props);
@@ -57,7 +59,7 @@ class App extends React.Component {
     const { context } = this.state;
 
     return (
-      <div>
+      <div className="neck">
         <String name={'E'} context={context} freq={1318.51} />
         <String name={'B'} context={context} freq={987.77} />
         <String name={'G'} context={context} freq={783.99} />
