@@ -35,8 +35,8 @@ class String extends React.Component {
     let { freq, name } = this.props;
 
     return (
-      <div onClick={() => this.onClick()}>
-        a string for frequency: {freq}, note: {name}
+      <div className="string" onClick={() => this.onClick()}>
+        frequency: {freq}, note: {name}
       </div>
     )
   };
@@ -59,13 +59,17 @@ class App extends React.Component {
     const { context } = this.state;
 
     return (
-      <div className="neck">
-        <String name={'E'} context={context} freq={1318.51} />
-        <String name={'B'} context={context} freq={987.77} />
-        <String name={'G'} context={context} freq={783.99} />
-        <String name={'D'} context={context} freq={587.33} />
-        <String name={'A'} context={context} freq={440}/>
-        <String name={'E'} context={context} freq={329.63} />
+      <div className="container">
+        <h1>fretboard tuner</h1>
+
+        <div className="neck">
+          <String name={'E'} context={context} freq={1318.51} />
+          <String name={'B'} context={context} freq={987.77} />
+          <String name={'G'} context={context} freq={783.99} />
+          <String name={'D'} context={context} freq={587.33} />
+          <String name={'A'} context={context} freq={440}/>
+          <String name={'E'} context={context} freq={329.63} />
+        </div>
       </div>
     );
   }
@@ -76,4 +80,3 @@ ReactDOM.render(
   <App />,
   document.getElementById('app')
 );
-
