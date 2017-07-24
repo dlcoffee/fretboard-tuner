@@ -10,12 +10,15 @@ class String extends React.Component {
 
     this.onClick = this.onClick.bind(this);
     this.synthesizedSound = this.synthesizedSound.bind(this);
+    this.playAt = this.playAt.bind(this);
+    this.createOscillator = this.createOscillator.bind(this);
+    this.stop = this.stop.bind(this);
   }
 
   synthesizedSound() {
     let { context } = this.props;
 
-    let sound = Tables.organ;
+    let sound = Tables.fuzzGuitar;
     let real = new Float32Array(sound.real.length);
     let imag = new Float32Array(sound.real.length);
 
@@ -30,23 +33,53 @@ class String extends React.Component {
   }
 
   onClick() {
-    let { context, freq } = this.props;
+    let { on, context } = this.props;
 
-    let oscillator = context.createOscillator();
+    if (!on) {
+      return;
+    }
+
+    this.playAt(context.currentTime, true);
+  }
+
+  createOscillator() {
+    let { context } = this.props;
+
+    this.stop();
+    this.osc = context.createOscillator();
+  }
+
+  stop() {
+    if (this.osc) {
+      this.osc.onended = null;
+      this.osc.disconnect();
+      this.osc = null;
+    }
+  }
+
+  playAt(when, loopOnce) {
+    console.log('called:', when);
+    let { context, loop, freq } = this.props;
+
+    this.createOscillator();
     let gainNode = context.createGain();
 
-    oscillator.connect(gainNode)
+    this.osc.connect(gainNode)
     gainNode.connect(context.destination);
 
-    oscillator.type = 'sine';
-    oscillator.frequency.value = freq;
-    oscillator.setPeriodicWave(this.synthesizedSound());
-    gainNode.gain.setValueAtTime(1, context.currentTime);
+    this.osc.type = 'sine';
+    this.osc.frequency.value = freq;
+    this.osc.setPeriodicWave(this.synthesizedSound());
+    gainNode.gain.setValueAtTime(1, when);
 
-    oscillator.start(context.currentTime);
+    this.osc.start(when);
 
-    gainNode.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 3);
-    oscillator.stop(context.currentTime + 3);
+    let duration = 2;
+
+    gainNode.gain.exponentialRampToValueAtTime(0.001, when + duration);
+    this.osc.stop(when + duration);
+
+    this.osc.onended = (loop && loopOnce) ? this.playAt(when + 2, true) : null;
   }
 
   render() {

@@ -11,6 +11,7 @@ class App extends React.Component {
     this.state = {
       context: new (window.AudioContext || window.webkitAudioContext)(),
       looping: false,
+      on: true,
     };
 
     // set up audio context
@@ -18,30 +19,43 @@ class App extends React.Component {
     // strings = [frequencies]
 
     this.toggleLoop = this.toggleLoop.bind(this);
+    this.toggleOnOff = this.toggleOnOff.bind(this);
   }
 
   toggleLoop() {
-    const { looping } = this.state;
-    this.setState({ looping: !looping });
+    const { looping, on } = this.state;
+    const toggledLooping = !looping;
+
+    if (!toggledLooping && on) {
+    }
+
+    this.setState({ looping: toggledLooping });
+  }
+
+  toggleOnOff() {
+    const { on } = this.state;
+    this.setState({ on: !on });
   }
 
   render() {
-    const { context, looping } = this.state;
+    const { context, looping, on } = this.state;
     const loopText = looping ? 'Loop Off' : 'Loop On';
+    const onOffText = on ? 'Turn Off' : 'Turn On';
 
     return (
       <div className="container">
         <h1>fretboard tuner</h1>
 
         <LoopControl onClick={this.toggleLoop}>{ loopText }</LoopControl>
+        <LoopControl onClick={this.toggleOnOff}>{ onOffText }</LoopControl>
 
         <div className="neck">
-          <String name={'E'} context={context} freq={1318.51} />
-          <String name={'B'} context={context} freq={987.77} />
-          <String name={'G'} context={context} freq={783.99} />
-          <String name={'D'} context={context} freq={587.33} />
-          <String name={'A'} context={context} freq={440}/>
-          <String name={'E'} context={context} freq={329.63} />
+          <String name={'E'} context={context} loop={looping} on={on} freq={1318.51} />
+          <String name={'B'} context={context} loop={looping} on={on} freq={987.77} />
+          <String name={'G'} context={context} loop={looping} on={on} freq={783.99} />
+          <String name={'D'} context={context} loop={looping} on={on} freq={587.33} />
+          <String name={'A'} context={context} loop={looping} on={on} freq={440}/>
+          <String name={'E'} context={context} loop={looping} on={on} freq={329.63} />
         </div>
       </div>
     );
